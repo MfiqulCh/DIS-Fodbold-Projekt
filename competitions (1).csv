@@ -1,0 +1,2 @@
+competition_id,competition_code,name,sub_type,type,country_id,country_name,domestic_league_code,cl_year,confederation,url,is_major_national_league
+CL,uefa-champions-league,uefa-champions-league,uefa_champions_league,international_cup,-1,202425,,,europa,https://www.transfermarkt.co.uk/uefa-champions-league/startseite/pokalwettbewerb/CL,false

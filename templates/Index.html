@@ -2,10 +2,11 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>PLayer List</title>
+    <title>Football stats</title>
+    
 </head>
 <body>
-    <h1> player List </h1>
+    <h1> Player List </h1>
     <table border = "1">
         <thead>
             <tr>
@@ -36,8 +37,52 @@
             {% endfor %}
         </tbody>
     </table>
+
+
+    <h1> Club List </h1>
+    <table border = "1">
+        <thead>
+            <tr>
+                <th>Club ID</th>
+                <th>Name</th>
+                <th>Domestic Competition</th>
+                <th>Total Market Value</th>
+                <th>Squad Size</th>
+                <th>Average Age</th>
+                <th>Foreign Players</th>
+                <th>National Team Players</th>
+                <th>Stadium</th>
+                <th>Stadium Seats</th>
+                <th>Coach</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for club in clubs %}
+            <tr>
+                <td>{{ club.club_id }}</td>
+                <td>{{ club.name }}</td>
+                <td>{{ club.domestic_competition_id }}</td>
+                <td>{{ club.total_market_value }}</td>
+                <td>{{ club.squad_size }}</td>
+                <td>{{ club.average_age }}</td>
+                <td>{{ club.foreigners_number }} ({{ club.foreigners_percentage }})</td>
+                <td>{{ club.national_team_players }}</td>
+                <td>{{ club.stadium_name }}</td>
+                <td>{{ club.stadium_seats }}</td>
+                <td>{{ club.coach_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 

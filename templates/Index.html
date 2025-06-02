@@ -1,39 +1,90 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <title>Football stats</title>
+    
+</head>
 <body>
-
-    <h1> player List </h1>
+    <h1> Player List </h1>
     <table border = "1">
-        <thread>
+        <thead>
             <tr>
                 <th>Player ID</th>
-                <th>Player Name</th>
-                <th>Player Age</th>
-                <th>Player Team</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Full Name</th>
+                <th>Current Club</th>
+                <th>Position</th>
+                <th>Foot</th>
+                <th>Height (cm)</th>
+                <th>Market Value (€)</th>
             </tr>
-        </thread>
+        </thead>
         <tbody>
             {% for player in players %}
             <tr>
-                <td>{{ player.id }}</td>
+                <td>{{ player.player_id }}</td>
+                <td>{{ player.first_name }}</td>
+                <td>{{ player.last_name }}</td>
                 <td>{{ player.name }}</td>
-                <td>{{ player.age }}</td>
-                <td>{{ player.team }}</td>
+                <td>{{ player.current_club_name }}</td>
+                <td>{{ player.position }}</td>
+                <td>{{ player.foot }}</td>
+                <td>{{ player.height_in_cm }}</td>
+                <td>{{ player.market_value_in_eur }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <h1> Club List </h1>
+    <table border = "1">
+        <thead>
+            <tr>
+                <th>Club ID</th>
+                <th>Name</th>
+                <th>Domestic Competition</th>
+                <th>Total Market Value</th>
+                <th>Squad Size</th>
+                <th>Average Age</th>
+                <th>Foreign Players</th>
+                <th>National Team Players</th>
+                <th>Stadium</th>
+                <th>Stadium Seats</th>
+                <th>Coach</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for club in clubs %}
+            <tr>
+                <td>{{ club.club_id }}</td>
+                <td>{{ club.name }}</td>
+                <td>{{ club.domestic_competition_id }}</td>
+                <td>{{ club.total_market_value }}</td>
+                <td>{{ club.squad_size }}</td>
+                <td>{{ club.average_age }}</td>
+                <td>{{ club.foreigners_number }} ({{ club.foreigners_percentage }})</td>
+                <td>{{ club.national_team_players }}</td>
+                <td>{{ club.stadium_name }}</td>
+                <td>{{ club.stadium_seats }}</td>
+                <td>{{ club.coach_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
 
 
 
 
-            <th>Player ID</th>
-            <th>Player Name</th>
-            <th>Player Age</th>
-            <th>Player Position</th>
-        </tr>
-        {% for player in players %}
-        <tr>
-            <td>{{ player.id }}</td>
-            <td>{{ player.name }}</td>
-            <td>{{ player.age }}</td>
-            <td>{{ player.position }}</td>
-        </tr>
-        {% endfor %}
+
+
+
+
+
+
+
+  

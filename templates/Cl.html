@@ -33,7 +33,7 @@
             {% for club in clubs %}
             <tr>
                 <td>{{ club.club_id }}</td>
-                <td>{{ club.name }}</td>
+                <td><a href="/clubs/{{ club.club_id }}">{{ club.name }}</a></td>
                 <td>{{ club.domestic_competition_id }}</td>
                 <td>{{ club.total_market_value }}</td>
                 <td>{{ club.squad_size }}</td>

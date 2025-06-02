@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<body>
+
+    <h1> player List </h1>
+    <table border = "1">
+        <thread>
+            <tr>
+                <th>Player ID</th>
+                <th>Player Name</th>
+                <th>Player Age</th>
+                <th>Player Team</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player.id }}</td>
+                <td>{{ player.name }}</td>
+                <td>{{ player.age }}</td>
+                <td>{{ player.team }}</td>
+
+
+
+
+            <th>Player ID</th>
+            <th>Player Name</th>
+            <th>Player Age</th>
+            <th>Player Position</th>
+        </tr>
+        {% for player in players %}
+        <tr>
+            <td>{{ player.id }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.age }}</td>
+            <td>{{ player.position }}</td>
+        </tr>
+        {% endfor %}

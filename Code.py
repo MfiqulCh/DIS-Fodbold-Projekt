@@ -1,15 +1,13 @@
-import sqlite3
+from flask import Flask, render_template
 import pandas as pd
 
-# Connect to the SQLite DB
-conn = sqlite3.connect("database.sqlite")
+app = Flask(__name__)
 
-# List of tables to extract
-tables_to_extract = ["Player", "Team", "League"]
+@app.route('/')
+def index():
+    df =  pd.read_csv('player.csv')
+    players = df.to_dict(orient='records')
+    return render_template('index.html', players=players)
 
-for table in tables_to_extract:
-    df = pd.read_sql_query(f"SELECT * FROM {table}", conn)
-    df.to_csv(f"{table.lower()}.csv", index=False)
-    print(f"Exported {table}.csv with {len(df)} rows")
-
-conn.close()
+if __name__ == '__main__':
+    app.run(debug=True)

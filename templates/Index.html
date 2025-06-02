@@ -1,39 +1,45 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <title>PLayer List</title>
+</head>
 <body>
-
     <h1> player List </h1>
     <table border = "1">
-        <thread>
+        <thead>
             <tr>
                 <th>Player ID</th>
-                <th>Player Name</th>
-                <th>Player Age</th>
-                <th>Player Team</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Full Name</th>
+                <th>Current Club</th>
+                <th>Position</th>
+                <th>Foot</th>
+                <th>Height (cm)</th>
+                <th>Market Value (€)</th>
             </tr>
-        </thread>
+        </thead>
         <tbody>
             {% for player in players %}
             <tr>
-                <td>{{ player.id }}</td>
+                <td>{{ player.player_id }}</td>
+                <td>{{ player.first_name }}</td>
+                <td>{{ player.last_name }}</td>
                 <td>{{ player.name }}</td>
-                <td>{{ player.age }}</td>
-                <td>{{ player.team }}</td>
+                <td>{{ player.current_club_name }}</td>
+                <td>{{ player.position }}</td>
+                <td>{{ player.foot }}</td>
+                <td>{{ player.height_in_cm }}</td>
+                <td>{{ player.market_value_in_eur }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
 
 
 
 
-            <th>Player ID</th>
-            <th>Player Name</th>
-            <th>Player Age</th>
-            <th>Player Position</th>
-        </tr>
-        {% for player in players %}
-        <tr>
-            <td>{{ player.id }}</td>
-            <td>{{ player.name }}</td>
-            <td>{{ player.age }}</td>
-            <td>{{ player.position }}</td>
-        </tr>
-        {% endfor %}
+  

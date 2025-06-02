@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    df =  pd.read_csv('player.csv')
+    df =  pd.read_csv('players.csv')
     players = df.to_dict(orient='records')
     return render_template('index.html', players=players)
 

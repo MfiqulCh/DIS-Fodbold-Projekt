@@ -2,44 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Football stats</title>
-    
+    <title>Clubs in Champions League</title>
 </head>
 <body>
-    <h1> Player List </h1>
-    <table border = "1">
-        <thead>
-            <tr>
-                <th>Player ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Full Name</th>
-                <th>Current Club</th>
-                <th>Position</th>
-                <th>Foot</th>
-                <th>Height (cm)</th>
-                <th>Market Value (€)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for player in players %}
-            <tr>
-                <td>{{ player.player_id }}</td>
-                <td>{{ player.first_name }}</td>
-                <td>{{ player.last_name }}</td>
-                <td>{{ player.name }}</td>
-                <td>{{ player.current_club_name }}</td>
-                <td>{{ player.position }}</td>
-                <td>{{ player.foot }}</td>
-                <td>{{ player.height_in_cm }}</td>
-                <td>{{ player.market_value_in_eur }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
+<nav>
+    <a href="/">Players</a> |
+    <a href="/clubs">Clubs</a>
+</nav>
+<hr>
 
-    <h1> Club List </h1>
+<h1> Club List </h1>
     <table border = "1">
         <thead>
             <tr>
@@ -60,7 +33,7 @@
             {% for club in clubs %}
             <tr>
                 <td>{{ club.club_id }}</td>
-                <td>{{ club.name }}</td>
+                <td><a href="/clubs/{{ club.club_id }}">{{ club.name }}</a></td>
                 <td>{{ club.domestic_competition_id }}</td>
                 <td>{{ club.total_market_value }}</td>
                 <td>{{ club.squad_size }}</td>

@@ -5,6 +5,9 @@ app = Flask(__name__)
 
 player_df =  pd.read_csv('players.csv')
 club_df = pd.read_csv('CL.csv')
+
+player_df['last_season'] = player_df['last_season'].astype(str).str.strip()
+
 club_df = club_df[pd.to_numeric(club_df['club_id'], errors='coerce').notnull()]
 club_df['club_id'] = club_df['club_id'].astype(int)
 
@@ -17,10 +20,15 @@ def home_page():
 @app.route('/players')
 def player_page():
     
-    player_df['last_season'] = player_df['last_season'].astype(str)
-    filter_players_df = player_df[player_df['last_season'] >= 2024].dropna(subset=['last_season'])
-    
+    filter_players_df = player_df[player_df['last_season'] == '2015']
     players = filter_players_df.to_dict(orient='records')
+    
+
+    
+    print(player_df['last_season'].head())
+    print(player_df['last_season'].dtype)
+    print("Filtered players count:", len(filter_players_df))
+
     return render_template('Player.html', players=players)
 
 
@@ -36,8 +44,12 @@ def club_detail_page(club_id):
     if not club:
         return "Club not found", 404
     club = club[0]
+        
+    club_players = player_df[
+        (player_df['current_club_name'] == club['name']) &
+        (player_df['last_season'] == '2015')
+    ].to_dict(orient='records')
     
-    club_players = player_df[player_df['current_club_name'] == club ['name']].to_dict(orient='records')
 
     
     return render_template('ClubDetail.html', club=club, players=club_players)

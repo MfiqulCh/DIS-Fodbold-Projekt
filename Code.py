@@ -9,9 +9,18 @@ club_df = club_df[pd.to_numeric(club_df['club_id'], errors='coerce').notnull()]
 club_df['club_id'] = club_df['club_id'].astype(int)
 
 
+
 @app.route('/')
+def home_page():
+    return render_template('FrontPage.html')
+
+@app.route('/players')
 def player_page():
-    players = player_df.to_dict(orient='records')
+    
+    player_df['last_season'] = player_df['last_season'].astype(str)
+    filter_player = player_df[player_df['last_season'] >= 2024]
+    
+    players = filter_player.to_dict(orient='records')
     return render_template('Player.html', players=players)
 
 

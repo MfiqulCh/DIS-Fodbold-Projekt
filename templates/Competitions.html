@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+    <title>Champions League Competitions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        img {
+            width: 200px;
+            cursor: pointer;
+        }
+        .caption {
+            font-size: 24px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        nav {
+            margin-bottom: 30px;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #004080;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/players">Players</a>
+    </nav>
+
+    {% for comp in competitions %}
+        <a href="/competitions/{{ comp.cl_year }}">
+            <img src="{{ url_for('static', filename='UEFA_Champions_League.png') }}" alt="Champions League Logo" />
+        </a>
+        <div class="caption">Champions League 2024 - 2025</div>
+    {% endfor %}
+</body>
+</html>

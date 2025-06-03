@@ -1,0 +1,82 @@
+<!-- filepath: /Users/osas/DIS/DIS-Fodbold-Projekt/templates/club.html -->
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Club Details</title>
+</head>
+<body>
+
+<nav>
+    <a href="/">Players</a> |
+    <a href="/clubs">Clubs</a>
+</nav>
+<hr>
+
+<h1>Club Details</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Club ID</th>
+            <th>Name</th>
+            <th>Domestic Competition</th>
+            <th>Total Market Value (€)</th>
+            <th>Squad Size</th>
+            <th>Average Age</th>
+            <th>Foreign Players</th>
+            <th>National Team Players</th>
+            <th>Stadium</th>
+            <th>Stadium Seats</th>
+            <th>Coach</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ club.club_id }}</td>
+            <td>{{ club.name }}</td>
+            <td>{{ club.domestic_competition_id }}</td>
+            <td>{{ club.total_market_value }}</td>
+            <td>{{ club.squad_size }}</td>
+            <td>{{ club.average_age }}</td>
+            <td>{{ club.foreigners_number }} ({{ club.foreigners_percentage }})</td>
+            <td>{{ club.national_team_players }}</td>
+            <td>{{ club.stadium_name }}</td>
+            <td>{{ club.stadium_seats }}</td>
+            <td>{{ club.coach_name }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Players in the Club</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Player ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Position</th>
+            <th>Height (cm)</th>
+            <th>Market Value (€)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in players %}
+        <tr>
+            <td>{{ player.player_id }}</td>
+            <td>{{ player.first_name }}</td>
+            <td>{{ player.last_name }}</td>
+            <td>{{ player.position }}</td>
+            <td>{{ player.height_in_cm }}</td>
+            <td>{{ player.market_value_in_eur }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No players available for this club.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

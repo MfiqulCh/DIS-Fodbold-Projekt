@@ -18,9 +18,9 @@ def home_page():
 def player_page():
     
     player_df['last_season'] = player_df['last_season'].astype(str)
-    filter_player = player_df[player_df['last_season'] >= 2024]
+    filter_players_df = player_df[player_df['last_season'] >= 2024].dropna(subset=['last_season'])
     
-    players = filter_player.to_dict(orient='records')
+    players = filter_players_df.to_dict(orient='records')
     return render_template('Player.html', players=players)
 
 

@@ -2,8 +2,8 @@
 CREATE TABLE IF NOT EXISTS competitions (
     competition_id     TEXT,
     name               TEXT,
-    sub_type           TEXT,
     type               TEXT,
+    sub_type           TEXT,
     confederation      TEXT,
     cl_year            INTEGER PRIMARY KEY,
     url                TEXT

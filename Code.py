@@ -5,9 +5,6 @@ app = Flask(__name__)
 
 player_df =  pd.read_csv('players.csv')
 club_df = pd.read_csv('CL.csv')
-
-player_df['last_season'] = player_df['last_season'].astype(str).str.strip()
-
 club_df = club_df[pd.to_numeric(club_df['club_id'], errors='coerce').notnull()]
 club_df['club_id'] = club_df['club_id'].astype(int)
 
@@ -19,18 +16,33 @@ def home_page():
 
 @app.route('/players')
 def player_page():
-    
-    filter_players_df = player_df[player_df['last_season'] == '2015']
-    players = filter_players_df.to_dict(orient='records')
+    player=player_df.to_dict(orient='records')
+    return render_template('Player.html', players=player)
     
 
-    
-    print(player_df['last_season'].head())
-    print(player_df['last_season'].dtype)
-    print("Filtered players count:", len(filter_players_df))
+@app.route('/players/<int:player_id>')
+def PlayerDetail(player_id):
+    print(f"DEBUG: Requested player_id = {player_id}")
+    filtered = player_df[player_df['player_id'] == player_id]
+    print(f"DEBUG: Filtered dataframe:\n{filtered}")
 
-    return render_template('Player.html', players=players)
+    if filtered.empty:
+        print("DEBUG: No player found!")
+        return "Player not found", 404
 
+    player = filtered.iloc[0].to_dict()
+    print(f"DEBUG: Player dict:\n{player}")
+
+    player_club = club_df[club_df['name'] == player['current_club_name']]
+    print(f"DEBUG: Player club dataframe:\n{player_club}")
+
+    if not player_club.empty:
+        player_club = player_club.iloc[0].to_dict()
+    else:
+        player_club = None
+    print(f"DEBUG: Player club dict:\n{player_club}")
+
+    return render_template('PlayerDetail.html', player=player, club=player_club)
 
 @app.route('/clubs')
 def club_page():
@@ -44,12 +56,8 @@ def club_detail_page(club_id):
     if not club:
         return "Club not found", 404
     club = club[0]
-        
-    club_players = player_df[
-        (player_df['current_club_name'] == club['name']) &
-        (player_df['last_season'] == '2015')
-    ].to_dict(orient='records')
     
+    club_players = player_df[player_df['current_club_name'] == club ['name']].to_dict(orient='records')
 
     
     return render_template('ClubDetail.html', club=club, players=club_players)

@@ -58,13 +58,32 @@ def competition_detail(cl_year):
 
 
 
+# @app.route('/clubs/<club_id>')
+# def club_detail(club_id):
+#     club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
+#     if not club:
+#         abort(404)
+#     players = database.fetchall("SELECT * FROM players WHERE current_club_id = %s ORDER BY last_name;", (club_id,))
+#     return render_template('ClubDetail.html', club=club, players=players)
+
 @app.route('/clubs/<club_id>')
 def club_detail(club_id):
     club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
     if not club:
         abort(404)
-    players = database.fetchall("SELECT * FROM players WHERE current_club_id = %s ORDER BY last_name;", (club_id,))
+    
+    # Updated SQL query without the 'foot' column
+    players_sql = """
+    SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur 
+    FROM players 
+    WHERE current_club_id = %s 
+    ORDER BY last_name;
+    """
+    players = database.fetchall(players_sql, (club_id,))
+    
     return render_template('ClubDetail.html', club=club, players=players)
+
+
 
 @app.route('/players')
 def player_page():
@@ -95,6 +114,21 @@ def search():
     clubs = database.fetchall(clubs_sql, (f"%{query}%", f"%{query}%"))
     
     return render_template('search_results.html', players=players, clubs=clubs, query=query)
+
+@app.route('/players/<int:player_id>')
+def player_detail(player_id):
+    # Fetch player details without the 'foot' column
+    player = database.fetchone("""
+        SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name
+        FROM players
+        WHERE player_id = %s
+    """, (player_id,))
+
+    if not player:
+        abort(404)
+
+    return render_template('PlayerDetail.html', player=player)
+
 
 
 if __name__ == '__main__':

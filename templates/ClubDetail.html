@@ -64,21 +64,15 @@
     <thead>
         <tr>
             <th>Player ID</th>
-            <th>Full Name</th> 
-            <th>Position</th>
-            <th>Height (cm)</th>
-            <th>Market Value (€)</th>
+            <th>Full Name</th> <!-- Only Full Name is kept -->
         </tr>
     </thead>
     <tbody>
         {% for player in players %}
         <tr>
             <td>{{ player.player_id }}</td>
-            <!-- Link to player detail page -->
+            <!-- Player full name -->
             <td><a href="/players/{{ player.player_id }}">{{ player.first_name }} {{ player.last_name }}</a></td>  
-            <td>{{ player.position }}</td>
-            <td>{{ player.height_in_cm }}</td>
-            <td>{{ player.market_value_in_eur }}</td>
         </tr>
         {% endfor %}
     </tbody>

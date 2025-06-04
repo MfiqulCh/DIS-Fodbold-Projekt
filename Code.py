@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, abort
 import database  # the new database.py file
+from datetime import datetime
 import re
 
 app = Flask(__name__)
@@ -58,21 +59,32 @@ def competition_detail(cl_year):
 
 
 
+# @app.route('/clubs/<club_id>')
+# def club_detail(club_id):
+#     club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
+#     if not club:
+#         abort(404)
+#     players = database.fetchall("SELECT * FROM players WHERE current_club_id = %s ORDER BY last_name;", (club_id,))
+#     return render_template('ClubDetail.html', club=club, players=players)
+
 @app.route('/clubs/<club_id>')
 def club_detail(club_id):
     club = database.fetchone(
         "SELECT * FROM clubs WHERE club_id = %s", (club_id,))
     if not club:
         abort(404)
+    
+    # Updated SQL query without the 'foot' column
+    players_sql = """
+    SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur 
+    FROM players 
+    WHERE current_club_id = %s 
+    ORDER BY last_name;
+    """
+    players = database.fetchall(players_sql, (club_id,))
+    
+    return render_template('ClubDetail.html', club=club, players=players)
 
-    cleaned = filename_from_club_name(club["name"])
-    club["logo_filename"] = cleaned + ".png"
-
-    players = database.fetchall(
-        "SELECT * FROM players WHERE current_club_id = %s", (club_id,)
-    )
-
-    return render_template("ClubDetail.html", club=club, players=players)
 
 
 @app.route('/players')
@@ -104,6 +116,31 @@ def search():
     clubs = database.fetchall(clubs_sql, (f"%{query}%", f"%{query}%"))
     
     return render_template('search_results.html', players=players, clubs=clubs, query=query)
+
+
+@app.route('/players/<int:player_id>')
+def player_detail(player_id):
+    player = database.fetchone("""
+        SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name, 
+               agent_name, country_of_birth, nationality, highest_market_value_in_eur, sub_position, date_of_birth
+        FROM players
+        WHERE player_id = %s
+    """, (player_id,))
+
+    if not player:
+        abort(404)
+
+    if player['date_of_birth']:
+        player['date_of_birth'] = player['date_of_birth'].strftime('%Y-%m-%d')
+
+    return render_template('PlayerDetail.html', player=player)
+
+
+    return render_template('PlayerDetail.html', player=player)
+
+
+
+
 
 
 if __name__ == '__main__':

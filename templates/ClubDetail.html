@@ -1,4 +1,4 @@
-<!doctype html>
+<!-- <!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -17,8 +17,66 @@
 <p><strong>Stadium:</strong> {{ club.stadium_name }} ({{ club.stadium_seats }} seats)</p>
 <p><strong>Domestic League:</strong> {{ club.domestic_competition_id }}</p>
 <p><strong>Average Age:</strong> {{ club.average_age }}</p>
-<p><strong>Foreigners:</strong> {{ club.foreigners_number }} ({{ club.foreigners_percentage }})</p>
+<p><strong>Foreigners:</strong> {{ club.foreigners_number }} ({{ club.foreigners_percentage }})</p> -->
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ club.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .club-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #004080;
+        }
+        .info-list {
+            margin-top: 30px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        .info-list strong {
+            display: inline-block;
+            width: 200px;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
 
+<div class="header">
+    <img class="club-logo" src="{{ url_for('static', filename='clubs/' + club.name.replace(' ', '_') + '.png') }}" alt="{{ club.name }} Logo" 
+         onerror="this.onerror=null;this.src='{{ url_for('static', filename='clubs/placeholder.png') }}';" />
+    <h1>{{ club.name }}</h1>
+</div>
+
+<div class="info-list">
+    <p><strong>Coach:</strong> {{ club.coach_name if club.coach_name and club.coach_name.strip() else "Not available" }}</p>
+    <p><strong>Domestic Competition:</strong> {{ club.domestic_competition_id }}</p>
+    <p><strong>Squad Size:</strong> {{ club.squad_size }}</p>
+    <p><strong>Average Age:</strong> {{ club.average_age }}</p>
+    <p><strong>Stadium Name:</strong> {{ club.stadium_name }}</p>
+    <p><strong>Stadium Seats:</strong> {{ club.stadium_seats }}</p>
+    <p><strong>URL:</strong> <a href="{{ club.url }}" target="_blank">{{ club.url }}</a></p>
+    <p><strong>Competition Year:</strong> {{ club.cl_year }}</p>
+</div>
 
 <h2>Players in {{ club.name }}</h2>
 <table border="1">

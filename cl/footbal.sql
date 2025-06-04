@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS clubs (
     foreigners_percentage   NUMERIC,
     stadium_name            TEXT,
     stadium_seats           INTEGER,
+    coach_name              TEXT,
     url                     TEXT,
     cl_year                 INTEGER REFERENCES competitions(cl_year)
 );

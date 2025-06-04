@@ -10,7 +10,7 @@ load_dotenv()
 DB_HOST     = os.getenv("DB_HOST", "localhost")
 DB_NAME     = os.getenv("DB_NAME", "ChampionsLeague")
 DB_USER     = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "Mush2003")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 conn = psycopg2.connect(
     host=DB_HOST,
@@ -70,13 +70,11 @@ with open("competitions (1).csv", newline="", encoding="utf-8") as f:
     execute_values(cur, sql, attributes)
 
 # CL.csv
-with open("CL.csv", newline="", encoding="utf-8") as f:
+with open("CL.csv", 'r', encoding='utf-8-sig') as f:
     reader = csv.DictReader(
         f,
-        delimiter=",",
-        quotechar='"'
-    )
-    print("CL.csv fieldnames:", reader.fieldnames)
+        delimiter=',', 
+        quotechar='"')
 
     if reader.fieldnames and reader.fieldnames[0].startswith("\ufeff"):
         reader.fieldnames[0] = reader.fieldnames[0].lstrip("\ufeff")
@@ -99,7 +97,6 @@ with open("CL.csv", newline="", encoding="utf-8") as f:
             except:
                 cl_year = None
         
-        print(f"Coach for {row.get('name')}: {repr(row.get('coach_name'))}")
         attributes.append((
             row.get("club_id"),
             row.get("club_code"),

@@ -10,7 +10,7 @@ def home():
     competitions = database.fetchall("SELECT * FROM competitions ORDER BY cl_year DESC;")
     return render_template('Competitions.html', competitions=competitions)
 
-def filename_from_club_name(name):
+def filename_from_club_name(name: str) -> str:
     return re.sub(r'[^\w]', '', name.replace(' ', '_'))
 
 Club_Names = {
@@ -59,11 +59,20 @@ def competition_detail(cl_year):
 
 @app.route('/clubs/<club_id>')
 def club_detail(club_id):
-    club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
+    club = database.fetchone(
+        "SELECT * FROM clubs WHERE club_id = %s", (club_id,))
     if not club:
         abort(404)
-    players = database.fetchall("SELECT * FROM players WHERE current_club_id = %s ORDER BY last_name;", (club_id,))
-    return render_template('ClubDetail.html', club=club, players=players)
+
+    cleaned = filename_from_club_name(club["name"])
+    club["logo_filename"] = cleaned + ".png"
+
+    players = database.fetchall(
+        "SELECT * FROM players WHERE current_club_id = %s", (club_id,)
+    )
+
+    return render_template("ClubDetail.html", club=club, players=players)
+
 
 @app.route('/players')
 def players():

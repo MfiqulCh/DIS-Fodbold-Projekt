@@ -59,7 +59,6 @@ def club_detail_page(club_id):
     
     
     club_players = player_df[player_df['current_club_name'] == club ['name']].to_dict(orient='records')
-
     
     return render_template('ClubDetail.html', club=club, players=club_players)
 

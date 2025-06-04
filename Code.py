@@ -130,16 +130,9 @@ def player_detail(player_id):
         abort(404)
 
     if player['date_of_birth']:
-        player['date_of_birth'] = player['date_of_birth'].strftime('%Y-%m-%d')
+        player['date_of_birth'] = player['date_of_birth'].strftime('%B %d, %Y')  # e.g. "June 09, 1978"
 
     return render_template('PlayerDetail.html', player=player)
-
-
-    return render_template('PlayerDetail.html', player=player)
-
-
-
-
 
 
 if __name__ == '__main__':

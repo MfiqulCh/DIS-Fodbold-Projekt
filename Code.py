@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, abort
 import database  # the new database.py file
+from datetime import datetime
 import re
 
 app = Flask(__name__)
@@ -115,11 +116,12 @@ def search():
     
     return render_template('search_results.html', players=players, clubs=clubs, query=query)
 
+
 @app.route('/players/<int:player_id>')
 def player_detail(player_id):
-    # Fetch player details without the 'foot' column
     player = database.fetchone("""
-        SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name
+        SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name, 
+               agent_name, country_of_birth, nationality, highest_market_value_in_eur, sub_position, date_of_birth
         FROM players
         WHERE player_id = %s
     """, (player_id,))
@@ -127,7 +129,16 @@ def player_detail(player_id):
     if not player:
         abort(404)
 
+    if player['date_of_birth']:
+        player['date_of_birth'] = player['date_of_birth'].strftime('%Y-%m-%d')
+
     return render_template('PlayerDetail.html', player=player)
+
+
+    return render_template('PlayerDetail.html', player=player)
+
+
+
 
 
 

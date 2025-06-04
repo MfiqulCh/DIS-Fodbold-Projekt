@@ -1,51 +1,17 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ player.first_name }} {{ player.last_name }} - Player Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ player.first_name }} {{ player.last_name }} - Player Detail</title>
 </head>
 <body>
 
-<nav>
-    <a href="/">Home</a> |
-    <a href="{{ url_for('player_page') }}">Players</a> |
-    <a href="/clubs">Clubs</a>
-</nav>
-<hr>
-
-<h1>Player Details for {{ player.first_name }} {{ player.last_name }} (ID: {{ player.player_id }})</h1>
-
-<table border="1" cellpadding="5" cellspacing="0">
-    <tbody>
-        <tr><th>First Name</th><td>{{ player.first_name }}</td></tr>
-        <tr><th>Last Name</th><td>{{ player.last_name }}</td></tr>
-        <tr><th>Full Name</th><td>{{ player.name }}</td></tr>
-        <tr><th>Current Club</th><td>{{ player.current_club_name }}</td></tr>
-        <tr><th>Position</th><td>{{ player.position }}</td></tr>
-        <tr><th>Foot</th><td>{{ player.foot }}</td></tr>
-        <tr><th>Height (cm)</th><td>{{ player.height_in_cm }}</td></tr>
-        <tr><th>Market Value (€)</th><td>{{ player.market_value_in_eur }}</td></tr>
-        <tr><th>Country of Birth</th><td>{{ player.country_of_birth }}</td></tr>
-        <tr><th>City of Birth</th><td>{{ player.city_of_birth }}</td></tr>
-        <tr><th>Date of Birth</th><td>{{ player.date_of_birth }}</td></tr>
-        <tr><th>Contract Expiration</th><td>{{ player.contract_expiration_date }}</td></tr>
-        <tr><th>Agent Name</th><td>{{ player.agent_name }}</td></tr>
-        <tr><th>Sub Position</th><td>{{ player.sub_position }}</td></tr>
-        <tr><th>Player Code</th><td>{{ player.player_code }}</td></tr>
-        <tr><th>Current Club Domestic Competition ID</th><td>{{ player.current_club_domestic_competition_id }}</td></tr>
-        <tr><th>Highest Market Value (€)</th><td>{{ player.highest_market_value_in_eur }}</td></tr>
-        <tr><th>Image</th><td>
-            {% if player.image_url %}
-                <img src="{{ player.image_url }}" alt="Player Image" style="max-height:150px;">
-            {% else %}
-                No image available
-            {% endif %}
-        </td></tr>
-    </tbody>
-</table>
-
-<br>
-<a href="{{ url_for('player_page') }}">Back to Players List</a>
+<h1>{{ player.first_name }} {{ player.last_name }}</h1>
+<p><strong>Position:</strong> {{ player.position }}</p>
+<p><strong>Height (cm):</strong> {{ player.height_in_cm }}</p>
+<p><strong>Market Value (€):</strong> {{ player.market_value_in_eur }}</p>
+<p><strong>Current Club:</strong> {{ player.current_club_name }}</p>
 
 </body>
 </html>

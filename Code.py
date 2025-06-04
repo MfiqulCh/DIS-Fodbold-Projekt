@@ -17,7 +17,7 @@ competition_df = pd.read_csv('competitions (1).csv')
 def home():
     return render_template('Competitions.html', competitions=competition_df.to_dict(orient='records'))
 
-def filename_from_club_name(name):
+def filename_from_club_name(name: str) -> str:
     return re.sub(r'[^\w]', '', name.replace(' ', '_'))
 
 Club_Names = {
@@ -46,10 +46,13 @@ Club_Names = {
 
 @app.route('/competitions/<int:cl_year>')
 def competition_detail(cl_year):
+    print(f"Fetching data for cl_year: {cl_year}")
     clubs = database.fetchall("""
         SELECT * FROM clubs WHERE cl_year = %s ORDER BY name;
     """, (cl_year,))
     competition = database.fetchone("SELECT * FROM competitions WHERE cl_year = %s", (cl_year,))
+    print(f"Competition: {competition}")
+    print(f"Clubs: {clubs}")
     if not competition:
         abort(404)
     
@@ -76,20 +79,19 @@ def list_clubs():
 
 @app.route('/clubs/<int:club_id>')
 def club_detail(club_id):
-    filtered = club_df[club_df['club_id'] == club_id]
-    if filtered.empty:
+    club = database.fetchone(
+        "SELECT * FROM clubs WHERE club_id = %s", (str(club_id),))
+    if not club:
         abort(404)
 
-    club = filtered.iloc[0].to_dict()
-    club['logo_filename'] = filename_from_club_name(club['name']) + '.png'
-    club['display_name']  = Club_Names.get(club['name'], club['name'])
+    cleaned = filename_from_club_name(club["name"])
+    club["logo_filename"] = cleaned + ".png"
 
-    club_players_df = player_df[player_df['current_club_name'] == club['name']]
-    club_players = club_players_df.to_dict(orient='records')
-    for p in club_players:
-        p['name'] = f"{p.get('first_name','')} {p.get('last_name','')}".strip()
-    return render_template('ClubDetail.html', club=club, players=club_players)
+    players = database.fetchall(
+        "SELECT * FROM players WHERE current_club_id = %s", (str(club_id),)
+    )
 
+    return render_template("ClubDetail.html", club=club, players=players)
 
 
 @app.route('/players')

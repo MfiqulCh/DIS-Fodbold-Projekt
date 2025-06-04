@@ -46,4 +46,8 @@ CREATE TABLE IF NOT EXISTS players (
     agent_name                    TEXT
 );
 
+SELECT * FROM competitions WHERE cl_year = 202425;
+
+SELECT * FROM clubs WHERE cl_year = 202425;
+
 

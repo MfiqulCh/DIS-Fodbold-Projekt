@@ -58,7 +58,6 @@
             {% for club in clubs %}
             <tr>
                 <td>{{ club.club_id }}</td>
-                <!-- Make the club name clickable, linking to the club's detail page -->
                 <td><a href="/clubs/{{ club.club_id }}">{{ club.name }}</a></td>
                 <td>{{ club.coach_name }}</td>
                 <td>{{ club.squad_size }}</td>

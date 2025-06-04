@@ -57,6 +57,7 @@ def club_detail_page(club_id):
         return "Club not found", 404
     club = club[0]
     
+    
     club_players = player_df[player_df['current_club_name'] == club ['name']].to_dict(orient='records')
 
     

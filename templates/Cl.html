@@ -3,61 +3,82 @@
 <head>
     <meta charset="utf-8">
     <title>Clubs in Champions League</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        nav {
+            margin-bottom: 30px;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #004080;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            margin-bottom: 40px;
+        }
+        .club-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+        .club-tile {
+            width: 150px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .club-logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .club-tile:hover .club-logo {
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
+        }
+        .club-name {
+            margin-top: 12px;
+            font-weight: bold;
+            color: #004080;
+            font-size: 1rem;
+            text-decoration: none;
+            display: block;
+        }
+    </style>
 </head>
 <body>
+    <nav>
+        <a href="/">Competitions</a> |
+        <a href="/players">Players</a>
+    </nav>
 
-<nav>
-    <a href="/">Players</a> |
-    <a href="/clubs">Clubs</a>
-</nav>
-<hr>
+    <h1>Clubs in Champions League</h1>
 
-<h1> Club List </h1>
-    <table border = "1">
-        <thead>
-            <tr>
-                <th>Club ID</th>
-                <th>Name</th>
-                <th>Domestic Competition</th>
-                <th>Total Market Value</th>
-                <th>Squad Size</th>
-                <th>Average Age</th>
-                <th>Foreign Players</th>
-                <th>National Team Players</th>
-                <th>Stadium</th>
-                <th>Stadium Seats</th>
-                <th>Coach</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for club in clubs %}
-            <tr>
-                <td>{{ club.club_id }}</td>
-                <td><a href="/clubs/{{ club.club_id }}">{{ club.name }}</a></td>
-                <td>{{ club.domestic_competition_id }}</td>
-                <td>{{ club.total_market_value }}</td>
-                <td>{{ club.squad_size }}</td>
-                <td>{{ club.average_age }}</td>
-                <td>{{ club.foreigners_number }} ({{ club.foreigners_percentage }})</td>
-                <td>{{ club.national_team_players }}</td>
-                <td>{{ club.stadium_name }}</td>
-                <td>{{ club.stadium_seats }}</td>
-                <td>{{ club.coach_name }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="club-grid">
+        {% for club in clubs %}
+        <div class="club-tile">
+            <a href="/clubs/{{ club.club_id }}">
+                <img
+                    class="club-logo"
+                    src="{{ url_for('static', filename='clubs/' + club.logo_filename) }}"
+                    alt="{{ club.name }} logo"
+                    onerror='this.onerror=null;this.src="{{ url_for('static', filename='clubs/placeholder.png') }}";'
+                />
+                <span class="club-name">{{ club.display_name }}</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-  

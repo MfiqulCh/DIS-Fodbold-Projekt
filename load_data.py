@@ -10,7 +10,7 @@ load_dotenv()
 DB_HOST     = os.getenv("DB_HOST", "localhost")
 DB_NAME     = os.getenv("DB_NAME", "ChampionsLeague")
 DB_USER     = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "Mush2003")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 conn = psycopg2.connect(
     host=DB_HOST,
@@ -87,6 +87,9 @@ with open("CL.csv", newline="", encoding="utf-8") as f:
         foreigners_number = int(row["foreigners_number"]) if row.get("foreigners_number") else None
         foreigners_percentage = float(row["foreigners_percentage"]) if row.get("foreigners_percentage") else None
         stadium_seats = int(row["stadium_seats"]) if row.get("stadium_seats") else None
+        coach_name = row.get("coach_name") 
+        if coach_name == '': 
+            coach_name = None
 
         cl_year = None
         if row.get("cl_year"):
@@ -95,6 +98,7 @@ with open("CL.csv", newline="", encoding="utf-8") as f:
             except:
                 cl_year = None
         
+        print(f"Coach for {row.get('name')}: {repr(row.get('coach_name'))}")
         attributes.append((
             row.get("club_id"),
             row.get("club_code"),
@@ -106,6 +110,7 @@ with open("CL.csv", newline="", encoding="utf-8") as f:
             foreigners_percentage,
             row.get("stadium_name"),
             stadium_seats,
+            coach_name,
             row.get("url"),
             cl_year
         ))
@@ -122,6 +127,7 @@ with open("CL.csv", newline="", encoding="utf-8") as f:
             foreigners_percentage,
             stadium_name,
             stadium_seats,
+            coach_name,
             url,
             cl_year
         ) VALUES %s

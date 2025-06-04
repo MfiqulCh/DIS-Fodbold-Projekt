@@ -1,4 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
+import database  # the new database.py file
+import re
 import pandas as pd
 
 app = Flask(__name__)
@@ -7,60 +9,143 @@ player_df =  pd.read_csv('players.csv')
 club_df = pd.read_csv('CL.csv')
 club_df = club_df[pd.to_numeric(club_df['club_id'], errors='coerce').notnull()]
 club_df['club_id'] = club_df['club_id'].astype(int)
+competition_df = pd.read_csv('competitions (1).csv')
 
 
 
 @app.route('/')
-def home_page():
-    return render_template('FrontPage.html')
+def home():
+    return render_template('Competitions.html', competitions=competition_df.to_dict(orient='records'))
+
+def filename_from_club_name(name):
+    return re.sub(r'[^\w]', '', name.replace(' ', '_'))
+
+Club_Names = {
+    "Arsenal Football Club": "Arsenal FC",
+    "Association sportive de Monaco Football Club": "AS Monaco",
+    "Associazione Calcio Milan": "AC Milan",
+    "Atalanta Bergamasca Calcio S.p.a.": "Atalanta BC",
+    "Bayer 04 Leverkusen FuÃŸball": "Bayer 04 Leverkusen",
+    "Club AtlÃ©tico de Madrid S.A.D.": "Club Atlético de Madrid",
+    "Club Brugge Koninklijke Voetbalvereniging": "Club Brugge KV",
+    "Eindhovense Voetbalvereniging Philips Sport Vereniging": "PSV Eindhoven",
+    "FC Bayern MÃ¼nchen" : "FC Bayern Munich",
+    "Football Club Internazionale Milano S.p.A.": "Inter Milan",
+    "Futbol Club Barcelona": "FC Barcelona",
+    "Juventus Football Club": "Juventus FC",
+    "Lille Olympique Sporting Club": "Lille OSC",
+    "Liverpool Football Club": "Liverpool FC",
+    "Manchester City Football Club": "Manchester City FC",
+    "Paris Saint-Germain Football Club": "PSG",
+    "Real Madrid Club de FÃºtbol": "Real Madrid",
+    "Sport Lisboa e Benfica": "SL Benfica",
+    "Sporting Clube de Portugal": "Sporting CP",
+    "Stade brestois 29": "Stade Brestois 29",
+    "The Celtic Football Club": "Celtic FC"
+}
+
+@app.route('/competitions/<int:cl_year>')
+def competition_detail(cl_year):
+    clubs = database.fetchall("""
+        SELECT * FROM clubs WHERE cl_year = %s ORDER BY name;
+    """, (cl_year,))
+    competition = database.fetchone("SELECT * FROM competitions WHERE cl_year = %s", (cl_year,))
+    if not competition:
+        abort(404)
+    
+    for club in clubs:
+        club['logo_filename'] = filename_from_club_name(club['name']) + '.png'
+        club['display_name'] = Club_Names.get(club['name'], club['name'])
+        print(f"Club: {club['name']}, Logo filename: {club['logo_filename']}")
+    
+    clubs.sort(key=lambda c: c['display_name'].lower())
+
+    return render_template('Cl.html', clubs=clubs, competition=competition)
+
+
+@app.route('/clubs')
+def list_clubs():
+    clubs = club_df.to_dict(orient='records')
+    for c in clubs:
+        c['logo_filename'] = filename_from_club_name(c['name']) + '.png'
+        c['display_name']  = Club_Names.get(c['name'], c['name'])
+    clubs.sort(key=lambda c: c['display_name'].lower())
+    return render_template('Cl.html', clubs=clubs)
+
+
+
+@app.route('/clubs/<int:club_id>')
+def club_detail(club_id):
+    filtered = club_df[club_df['club_id'] == club_id]
+    if filtered.empty:
+        abort(404)
+
+    club = filtered.iloc[0].to_dict()
+    club['logo_filename'] = filename_from_club_name(club['name']) + '.png'
+    club['display_name']  = Club_Names.get(club['name'], club['name'])
+
+    club_players_df = player_df[player_df['current_club_name'] == club['name']]
+    club_players = club_players_df.to_dict(orient='records')
+    for p in club_players:
+        p['name'] = f"{p.get('first_name','')} {p.get('last_name','')}".strip()
+    return render_template('ClubDetail.html', club=club, players=club_players)
+
+
 
 @app.route('/players')
-def player_page():
-    player=player_df.to_dict(orient='records')
-    return render_template('Player.html', players=player)
+def players():
+    players = database.fetchall("SELECT * FROM players ORDER BY last_name LIMIT 100;")
+    for p in players:
+        p['name'] = f"{p.get('first_name', '')} {p.get('last_name', '')}".strip()
+
+    return render_template('Player.html', players=players)
+
     
 
 @app.route('/players/<int:player_id>')
 def PlayerDetail(player_id):
-    print(f"DEBUG: Requested player_id = {player_id}")
     filtered = player_df[player_df['player_id'] == player_id]
-    print(f"DEBUG: Filtered dataframe:\n{filtered}")
 
     if filtered.empty:
-        print("DEBUG: No player found!")
-        return "Player not found", 404
-
+        abort (404)
+    
     player = filtered.iloc[0].to_dict()
-    print(f"DEBUG: Player dict:\n{player}")
-
-    player_club = club_df[club_df['name'] == player['current_club_name']]
-    print(f"DEBUG: Player club dataframe:\n{player_club}")
-
-    if not player_club.empty:
-        player_club = player_club.iloc[0].to_dict()
-    else:
-        player_club = None
-    print(f"DEBUG: Player club dict:\n{player_club}")
-
-    return render_template('PlayerDetail.html', player=player, club=player_club)
-
-@app.route('/clubs')
-def club_page():
-    clubs = club_df.to_dict(orient='records')
-    return render_template('Cl.html', clubs=clubs)
-
-@app.route('/clubs/<int:club_id>')
-def club_detail_page(club_id):
-    club = club_df[club_df['club_id'] == club_id].to_dict(orient='records')
+    club_row = club_df[club_df['name'] == player['current_club_name']]
+    club_data = None
     
-    if not club:
-        return "Club not found", 404
-    club = club[0]
+    if not club_row.empty:
+        club_data = club_row.iloc[0].to_dict()
+        club_data['logo_filename'] = filename_from_club_name(club_data['name']) + '.png'
+        club_data['display_name'] = Club_Names.get(club_data['name'], club_data['name'])
+    return render_template('PlayerDetail.html', player=player, club=club_data)
+
+
+
+# @app.route('/csv/players')
+# def csv_players():
+#     players = player_df.to_dict(orient='records')
+#     for p in players:
+#         p['name'] = f"{p.get('first_name','')} {p.get('last_name','')}".strip()
+#     return render_template('Player.html', players=players)
+
+
+# @app.route('/csv/clubs')
+# def club_page():
+#     clubs = club_df.to_dict(orient='records')
+#     return render_template('Cl.html', clubs=clubs)
+
+# @app.route('/csv/clubs/<int:club_id>')
+# def club_detail_page(club_id):
+#     club_List = club_df[club_df['club_id'] == club_id].to_dict(orient='records')
+    
+#     if not club_List:
+#         return "Club not found", 404
+#     club = club_List[0]
     
     
-    club_players = player_df[player_df['current_club_name'] == club ['name']].to_dict(orient='records')
+#     club_players = player_df[player_df['current_club_name'] == club ['name']].to_dict(orient='records')
     
-    return render_template('ClubDetail.html', club=club, players=club_players)
+#     return render_template('ClubDetail.html', club=club, players=club_players)
 
 if __name__ == '__main__':
     app.run(debug=True)

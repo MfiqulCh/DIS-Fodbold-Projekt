@@ -66,11 +66,12 @@ def club_detail(club_id):
     return render_template('ClubDetail.html', club=club, players=players)
 
 @app.route('/players')
-def players():
-    players = database.fetchall("SELECT * FROM players ORDER BY last_name LIMIT 100;")
-    for p in players:
-        p['name'] = f"{p.get('first_name', '')} {p.get('last_name', '')}".strip()
-
+def player_page():
+    
+    player_df['last_season'] = player_df['last_season'].astype(str)
+    filter_players_df = player_df[player_df['last_season'] >= 2024].dropna(subset=['last_season'])
+    
+    players = filter_players_df.to_dict(orient='records')
     return render_template('Player.html', players=players)
 
 

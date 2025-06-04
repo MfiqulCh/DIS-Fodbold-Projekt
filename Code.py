@@ -1,8 +1,9 @@
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, request, abort
 import database  # the new database.py file
 import re
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def home():
@@ -73,6 +74,27 @@ def player_page():
     
     players = filter_players_df.to_dict(orient='records')
     return render_template('Player.html', players=players)
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get("query", "").lower()
+    
+    if not query:
+        return render_template('search_results.html', players=[], clubs=[], query=query)
+    
+    players_sql = """
+    SELECT * FROM players 
+    WHERE LOWER(first_name) LIKE %s OR LOWER(last_name) LIKE %s OR LOWER(position) LIKE %s;
+    """
+    players = database.fetchall(players_sql, (f"%{query}%", f"%{query}%", f"%{query}%"))
+    
+    clubs_sql = """
+    SELECT * FROM clubs 
+    WHERE LOWER(name) LIKE %s OR LOWER(coach_name) LIKE %s;
+    """
+    clubs = database.fetchall(clubs_sql, (f"%{query}%", f"%{query}%"))
+    
+    return render_template('search_results.html', players=players, clubs=clubs, query=query)
 
 
 if __name__ == '__main__':

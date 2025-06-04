@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a> |
+    <a href="/competitions">Competitions</a> |
+    <a href="/players">Players</a> |
+    <a href="/clubs">Clubs</a>
+</nav>
+<hr>
+
+<h1>Search Results for "{{ query }}"</h1>
+
+<h2>Players</h2>
+{% if players %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Full Name</th>
+                <th>Position</th>
+                <th>Current Club</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player.player_id }}</td>
+                <td>{{ player.first_name }} {{ player.last_name }}</td>
+                <td>{{ player.position }}</td>
+                <td>{{ player.current_club_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No players found.</p>
+{% endif %}
+
+<h2>Clubs</h2>
+{% if clubs %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Club ID</th>
+                <th>Club Name</th>
+                <th>Coach</th>
+                <th>Squad Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for club in clubs %}
+            <tr>
+                <td>{{ club.club_id }}</td>
+                <!-- Make the club name clickable, linking to the club's detail page -->
+                <td><a href="/clubs/{{ club.club_id }}">{{ club.name }}</a></td>
+                <td>{{ club.coach_name }}</td>
+                <td>{{ club.squad_size }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No clubs found.</p>
+{% endif %}
+
+</body>
+</html>

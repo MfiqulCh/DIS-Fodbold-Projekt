@@ -24,11 +24,15 @@
         {% for player in players %}
         <tr>
             <td>{{ player.player_id }}</td>
-            <td>
-                <a href="{{ url_for('PlayerDetail', player_id=player.player_id) }}">
-                    {{ player.first_name }} {{ player.last_name }}
-                </a>
-            </td>
+            <td>{{ player.first_name }}</td>
+            <td>{{ player.last_name }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.current_club_name }}</td>
+            <td>{{ player.position }}</td>
+            <td>{{ player.foot }}</td>
+            <td>{{ player.height_in_cm }}</td>
+            <td>{{ player.market_value_in_eur }}</td>
+            <td>{{ player.full_name }}</td>
         </tr>
         {% endfor %}
     </tbody>

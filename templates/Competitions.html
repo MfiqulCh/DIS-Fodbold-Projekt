@@ -11,11 +11,15 @@
         img {
             width: 200px;
             cursor: pointer;
+            margin-top: 30px;
         }
         .caption {
             font-size: 24px;
             margin-top: 15px;
             font-weight: bold;
+            display: inline-block; 
+            text-align: center; 
+            width: 100%; 
         }
         nav {
             margin-bottom: 30px;
@@ -29,6 +33,22 @@
         nav a:hover {
             text-decoration: underline;
         }
+        form {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 250px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -36,12 +56,17 @@
         <a href="/competitions/202425">Clubs</a> |
         <a href="/players">Players</a>
     </nav>
+    
+    <form action="/search" method="GET">
+        <input type="text" name="query" placeholder="Search for players or clubs..." required>
+        <button type="submit">Search</button>
+    </form>
 
     {% for comp in competitions %}
         <a href="/competitions/{{ comp.cl_year }}">
             <img src="{{ url_for('static', filename='UEFA_Champions_League.png') }}" alt="Champions League Logo" />
         </a>
-        <div class="caption">Champions League 2024 - 2025</div>
+        <div class="caption">Champions League {{ comp.cl_year }}</div>
     {% endfor %}
 </body>
 </html>

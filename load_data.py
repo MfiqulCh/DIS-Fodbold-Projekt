@@ -187,7 +187,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
             row.get("city_of_birth"),
             row.get("agent_name"),
             row.get("first_name") + " " + row.get("last_name") if row.get("first_name") and row.get("last_name") else None
-            
         ))
 
 

@@ -164,7 +164,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
     attributes = []
 
     for row in reader:
-        date_of_birth = parse_date(row.get("date_of_birth", ""))
         height_in_cm = int(row["height_in_cm"]) if row.get("height_in_cm") else None
         mkt_val = float(row["market_value_in_eur"]) if row.get("market_value_in_eur") else None
         high_mkt_val = float(row["highest_market_value_in_eur"]) if row.get("highest_market_value_in_eur") else None
@@ -182,8 +181,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
             high_mkt_val,
             club_id,
             row.get("current_club_name"),
-            row.get("nationality"),
-            row.get("country_of_birth"),
             row.get("city_of_birth"),
             row.get("agent_name"),
             row.get("first_name") + " " + row.get("last_name") if row.get("first_name") and row.get("last_name") else None
@@ -203,8 +200,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
                     highest_market_value_in_eur,
                     current_club_id,
                     current_club_name,
-                    nationality,
-                    country_of_birth,
                     city_of_birth,
                     agent_name
                 ) VALUES %s
@@ -227,8 +222,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
                 highest_market_value_in_eur,
                 current_club_id,
                 current_club_name,
-                nationality,
-                country_of_birth,
                 city_of_birth,
                 agent_name
             ) VALUES %s

@@ -112,18 +112,14 @@ def search():
 def player_detail(player_id):
     player = database.fetchone("""
         SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name, 
-            agent_name, country_of_birth, date_of_birth
+            agent_name
         FROM players
         WHERE player_id = %s
-""", (player_id,))
+    """, (player_id,))
 
-    print(player)
-
+    
     if not player:
         abort(404)
-
-    if player['date_of_birth']:
-        player['date_of_birth'] = player['date_of_birth'].strftime('%B %d, %Y')
 
     return render_template('PlayerDetail.html', player=player)
 

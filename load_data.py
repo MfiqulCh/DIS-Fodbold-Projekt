@@ -10,7 +10,7 @@ load_dotenv()
 DB_HOST     = os.getenv("DB_HOST", "localhost")
 DB_NAME     = os.getenv("DB_NAME", "ChampionsLeague")
 DB_USER     = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "Mush2003")
 
 conn = psycopg2.connect(
     host=DB_HOST,
@@ -70,11 +70,12 @@ with open("competitions (1).csv", newline="", encoding="utf-8") as f:
     execute_values(cur, sql, attributes)
 
 # CL.csv
-with open("CL.csv", 'r', encoding='utf-8-sig') as f:
+with open("CL.csv", newline="", encoding="utf-8") as f:
     reader = csv.DictReader(
         f,
-        delimiter=',', 
-        quotechar='"')
+        delimiter=",",
+        quotechar='"'
+    )
 
     if reader.fieldnames and reader.fieldnames[0].startswith("\ufeff"):
         reader.fieldnames[0] = reader.fieldnames[0].lstrip("\ufeff")
@@ -97,6 +98,7 @@ with open("CL.csv", 'r', encoding='utf-8-sig') as f:
             except:
                 cl_year = None
         
+        print(f"Coach for {row.get('name')}: {repr(row.get('coach_name'))}")
         attributes.append((
             row.get("club_id"),
             row.get("club_code"),
@@ -129,21 +131,8 @@ with open("CL.csv", 'r', encoding='utf-8-sig') as f:
             url,
             cl_year
         ) VALUES %s
-        ON CONFLICT (club_id) DO UPDATE
-            SET
-                club_code               = EXCLUDED.club_code,
-                name                    = EXCLUDED.name,
-                domestic_competition_id = EXCLUDED.domestic_competition_id,
-                squad_size              = EXCLUDED.squad_size,
-                average_age             = EXCLUDED.average_age,
-                foreigners_number       = EXCLUDED.foreigners_number,
-                foreigners_percentage   = EXCLUDED.foreigners_percentage,
-                stadium_name            = EXCLUDED.stadium_name,
-                stadium_seats           = EXCLUDED.stadium_seats,
-                coach_name              = EXCLUDED.coach_name,
-                url                     = EXCLUDED.url,
-                cl_year                 = EXCLUDED.cl_year;
-        """
+        ON CONFLICT (club_id) DO NOTHING;
+    """
     execute_values(cur, sql, attributes)
 
 cur.execute("SELECT club_id FROM clubs;")

@@ -2,23 +2,17 @@ from flask import Flask, render_template, request, abort
 import database  # the new database.py file
 from datetime import datetime
 import re
-import pandas as pd
 
 app = Flask(__name__)
 
-player_df = pd.read_csv('players.csv')
-club_df = pd.read_csv('CL.csv')
-competition_df = pd.read_csv('competitions (1).csv')
-
-
-club_df = club_df[pd.to_numeric(club_df['club_id'], errors='coerce').notnull()]
-club_df['club_id'] = club_df['club_id'].astype(int)
 
 @app.route('/')
 def home():
-    return render_template('Competitions.html', competitions=competition_df.to_dict(orient='records'))
+    # Show competitions first
+    competitions = database.fetchall("SELECT * FROM competitions ORDER BY cl_year DESC;")
+    return render_template('Competitions.html', competitions=competitions)
 
-def filename_from_club_name(name: str) -> str:
+def filename_from_club_name(name):
     return re.sub(r'[^\w]', '', name.replace(' ', '_'))
 
 Club_Names = {
@@ -47,13 +41,10 @@ Club_Names = {
 
 @app.route('/competitions/<int:cl_year>')
 def competition_detail(cl_year):
-    print(f"Fetching data for cl_year: {cl_year}")
     clubs = database.fetchall("""
         SELECT * FROM clubs WHERE cl_year = %s ORDER BY name;
     """, (cl_year,))
     competition = database.fetchone("SELECT * FROM competitions WHERE cl_year = %s", (cl_year,))
-    print(f"Competition: {competition}")
-    print(f"Clubs: {clubs}")
     if not competition:
         abort(404)
     
@@ -76,22 +67,22 @@ def competition_detail(cl_year):
 #     players = database.fetchall("SELECT * FROM players WHERE current_club_id = %s ORDER BY last_name;", (club_id,))
 #     return render_template('ClubDetail.html', club=club, players=players)
 
-@app.route('/clubs/<int:club_id>')
+@app.route('/clubs/<club_id>')
 def club_detail(club_id):
-    club = database.fetchone(
-        "SELECT * FROM clubs WHERE club_id = %s", (str(club_id),))
+    club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
     if not club:
         abort(404)
-
-    cleaned = filename_from_club_name(club["name"])
-    club["logo_filename"] = cleaned + ".png"
-
-    players = database.fetchall(
-        "SELECT * FROM players WHERE current_club_id = %s", (str(club_id),)
-    )
-
-    return render_template("ClubDetail.html", club=club, players=players)
-
+    
+    # Updated SQL query without the 'foot' column
+    players_sql = """
+    SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur 
+    FROM players 
+    WHERE current_club_id = %s 
+    ORDER BY last_name;
+    """
+    players = database.fetchall(players_sql, (club_id,))
+    
+    return render_template('ClubDetail.html', club=club, players=players)
 
 
 
@@ -129,7 +120,8 @@ def search():
 @app.route('/players/<int:player_id>')
 def player_detail(player_id):
     player = database.fetchone("""
-        SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name, country_of_birth
+        SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name, 
+               agent_name, country_of_birth, nationality, highest_market_value_in_eur, sub_position, date_of_birth
         FROM players
         WHERE player_id = %s
     """, (player_id,))
@@ -138,10 +130,9 @@ def player_detail(player_id):
         abort(404)
 
     if player['date_of_birth']:
-        player['date_of_birth'] = player['date_of_birth'].strftime('%Y-%m-%d')
+        player['date_of_birth'] = player['date_of_birth'].strftime('%B %d, %Y')  # e.g. "June 09, 1978"
 
     return render_template('PlayerDetail.html', player=player)
-
 
 
 if __name__ == '__main__':

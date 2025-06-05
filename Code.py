@@ -136,14 +136,11 @@ def player_detail(player_id):
 
     if not player:
         abort(404)
-        
-    print(f"Player Data: {player}")
+
+    if player['date_of_birth']:
+        player['date_of_birth'] = player['date_of_birth'].strftime('%Y-%m-%d')
 
     return render_template('PlayerDetail.html', player=player)
-
-
-
-
 
 
 

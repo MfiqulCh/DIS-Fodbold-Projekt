@@ -2,6 +2,7 @@ First you have to get acces to venv by typing this in the terminal:
 .\venv\Scripts\activate
 
 If flask isn't installed you should do this command:
+
 pip install flask 
 
 pip install psycopg2-binary 

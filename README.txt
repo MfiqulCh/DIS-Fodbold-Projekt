@@ -15,7 +15,7 @@ execute the scripts.
 Now you would be able to run the code, but first, you need to run load_data.py by typing this command in a git bash terminal.
 python load_data.py
 
-After you can run the code by typing:
+After you can run the code by typing: 
 python Code.py
 Then u will get a server address that you should copy and paste it on a browser or hold ctrl and click on it.
 __________________________________________________________________________________________________________________________

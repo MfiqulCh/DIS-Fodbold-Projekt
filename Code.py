@@ -73,7 +73,6 @@ def club_detail(club_id):
     if not club:
         abort(404)
     
-    # Updated SQL query without the 'foot' column
     players_sql = """
     SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur 
     FROM players 

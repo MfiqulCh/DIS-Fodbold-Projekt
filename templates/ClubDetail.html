@@ -9,6 +9,25 @@
             font-family: Arial, sans-serif;
             margin: 40px;
         }
+        nav {
+            text-align: center; /* Centers the nav links */
+            margin-bottom: 30px;
+        }
+        nav a {
+            margin: 0 10px; /* Spacing between the nav links */
+            text-decoration: none;
+            color: #004080;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #004080;
+        }
         .header {
             display: flex;
             align-items: center;
@@ -22,12 +41,6 @@
             border-radius: 10px;
             box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
         }
-        h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #004080;
-        }
         .info-list {
             margin-top: 30px;
             line-height: 1.6;
@@ -40,43 +53,57 @@
         }
     </style>
 </head>
+
 <body>
+    <nav>
+        <a href="/">Competitions</a> |
+        <a href="/competitions/202425">Clubs</a>
+    </nav>
+    
+    <div class="header">
+        <img
+            class="club-logo"
+            src="{{ url_for('static', filename='clubs/' + club.logo_filename) }}"
+            alt="{{ club.name }} Logo"
+            onerror="this.onerror=null;this.src='{{ url_for('static', filename='clubs/placeholder.png') }}';"
+        />
+        <h1>{{ club.name }}</h1>
+    </div>
 
 <div class="header">
     <img class="club-logo" src="{{ url_for('static', filename='clubs/' + club.name.replace(' ', '_') + '.png') }}" alt="{{ club.name }} Logo" 
          onerror="this.onerror=null;this.src='{{ url_for('static', filename='clubs/placeholder.png') }}';" />
     <h1>{{ club.name }}</h1>
 </div>
+    <div class="info-list">
+        <p><strong>Coach:</strong> {{ club.coach_name if club.coach_name and club.coach_name.strip() else "Not available" }}</p>
+        <p><strong>Domestic Competition:</strong> {{ club.domestic_competition_id }}</p>
+        <p><strong>Squad Size:</strong> {{ club.squad_size }}</p>
+        <p><strong>Average Age:</strong> {{ club.average_age }}</p>
+        <p><strong>Stadium Name:</strong> {{ club.stadium_name }}</p>
+        <p><strong>Stadium Seats:</strong> {{ club.stadium_seats }}</p>
+        <p><strong>URL:</strong> <a href="{{ club.url }}" target="_blank">{{ club.url }}</a></p>
+        <p><strong>Competition Year:</strong> {{ club.cl_year }}</p>
+    </div>
 
-<div class="info-list">
-    <p><strong>Coach:</strong> {{ club.coach_name if club.coach_name and club.coach_name.strip() else "Not available" }}</p>
-    <p><strong>Domestic Competition:</strong> {{ club.domestic_competition_id }}</p>
-    <p><strong>Squad Size:</strong> {{ club.squad_size }}</p>
-    <p><strong>Average Age:</strong> {{ club.average_age }}</p>
-    <p><strong>Stadium Name:</strong> {{ club.stadium_name }}</p>
-    <p><strong>Stadium Seats:</strong> {{ club.stadium_seats }}</p>
-    <p><strong>URL:</strong> <a href="{{ club.url }}" target="_blank">{{ club.url }}</a></p>
-    <p><strong>Competition Year:</strong> {{ club.cl_year }}</p>
-</div>
-
-<h2>Players in {{ club.name }}</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Player ID</th>
-            <th>Full Name</th> <!-- Only Full Name is kept -->
-        </tr>
-    </thead>
-    <tbody>
-        {% for player in players %}
-        <tr>
-            <td>{{ player.player_id }}</td>
-            <!-- Player full name -->
-            <td><a href="/players/{{ player.player_id }}">{{ player.first_name }} {{ player.last_name }}</a></td>  
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <h2>Players in {{ club.name }}</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Full Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player.player_id }}</td>
+                <!-- Player full name with a link to player detail page -->
+                <td><a href="/players/{{ player.player_id }}">{{ player.first_name }} {{ player.last_name }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 </body>
 </html>

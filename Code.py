@@ -8,7 +8,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    # Show competitions first
     competitions = database.fetchall("SELECT * FROM competitions ORDER BY cl_year DESC;")
     return render_template('Competitions.html', competitions=competitions)
 
@@ -57,13 +56,12 @@ def competition_detail(cl_year):
 
     return render_template('Cl.html', clubs=clubs, competition=competition)
 
-
 @app.route('/clubs/<club_id>')
 def club_detail(club_id):
     club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
     if not club:
         abort(404)
-
+    
     club['logo_filename'] = filename_from_club_name(club['name']) + '.png'
     
     players_sql = """
@@ -73,9 +71,8 @@ def club_detail(club_id):
     ORDER BY last_name;
     """
     players = database.fetchall(players_sql, (club_id,))
-
+    
     return render_template('ClubDetail.html', club=club, players=players)
-
 
 @app.route('/players')
 def player_page():
@@ -112,12 +109,11 @@ def search():
 def player_detail(player_id):
     player = database.fetchone("""
         SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name, 
-            agent_name
+               agent_name, country_of_birth, highest_market_value_in_eur, sub_position
         FROM players
         WHERE player_id = %s
     """, (player_id,))
 
-    
     if not player:
         abort(404)
 
@@ -126,4 +122,3 @@ def player_detail(player_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
-

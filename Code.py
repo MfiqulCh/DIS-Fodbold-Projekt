@@ -12,7 +12,7 @@ def home():
     competitions = database.fetchall("SELECT * FROM competitions ORDER BY cl_year DESC;")
     return render_template('Competitions.html', competitions=competitions)
 
-def filename_from_club_name(name: str) -> str:
+def filename_from_club_name(name):
     return re.sub(r'[^\w]', '', name.replace(' ', '_'))
 
 Club_Names = {
@@ -58,23 +58,14 @@ def competition_detail(cl_year):
     return render_template('Cl.html', clubs=clubs, competition=competition)
 
 
-
-# @app.route('/clubs/<club_id>')
-# def club_detail(club_id):
-#     club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
-#     if not club:
-#         abort(404)
-#     players = database.fetchall("SELECT * FROM players WHERE current_club_id = %s ORDER BY last_name;", (club_id,))
-#     return render_template('ClubDetail.html', club=club, players=players)
-
 @app.route('/clubs/<club_id>')
 def club_detail(club_id):
-    club = database.fetchone(
-        "SELECT * FROM clubs WHERE club_id = %s", (club_id,))
+    club = database.fetchone("SELECT * FROM clubs WHERE club_id = %s", (club_id,))
     if not club:
         abort(404)
+
+    club['logo_filename'] = filename_from_club_name(club['name']) + '.png'
     
-    # Updated SQL query without the 'foot' column
     players_sql = """
     SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur 
     FROM players 
@@ -82,9 +73,8 @@ def club_detail(club_id):
     ORDER BY last_name;
     """
     players = database.fetchall(players_sql, (club_id,))
-    
-    return render_template('ClubDetail.html', club=club, players=players)
 
+    return render_template('ClubDetail.html', club=club, players=players)
 
 
 @app.route('/players')
@@ -122,16 +112,18 @@ def search():
 def player_detail(player_id):
     player = database.fetchone("""
         SELECT player_id, first_name, last_name, position, height_in_cm, market_value_in_eur, current_club_name, 
-               agent_name, country_of_birth, nationality, highest_market_value_in_eur, sub_position, date_of_birth
+            agent_name, country_of_birth, date_of_birth
         FROM players
         WHERE player_id = %s
-    """, (player_id,))
+""", (player_id,))
+
+    print(player)
 
     if not player:
         abort(404)
 
     if player['date_of_birth']:
-        player['date_of_birth'] = player['date_of_birth'].strftime('%B %d, %Y')  # e.g. "June 09, 1978"
+        player['date_of_birth'] = player['date_of_birth'].strftime('%B %d, %Y')
 
     return render_template('PlayerDetail.html', player=player)
 

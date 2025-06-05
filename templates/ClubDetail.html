@@ -81,63 +81,24 @@
         <p><strong>Competition Year:</strong> {{ club.cl_year }}</p>
     </div>
 
-<<<<<<< HEAD
     <h2>Players in {{ club.name }}</h2>
     <table border="1">
         <thead>
             <tr>
                 <th>Player ID</th>
                 <th>Full Name</th>
-                <th>Position</th>
-                <th>Foot</th>
-                <th>Height (cm)</th>
-                <th>Market Value (€)</th>
             </tr>
         </thead>
         <tbody>
             {% for player in players %}
             <tr>
                 <td>{{ player.player_id }}</td>
-                <td>{{ player.name }}</td>
-                <td>{{ player.position }}</td>
-                <td>{{ player.foot }}</td>
-                <td>{{ player.height_in_cm }}</td>
-                <td>{{ player.market_value_in_eur }}</td>
+                <!-- Player full name with a link to player detail page -->
+                <td><a href="/players/{{ player.player_id }}">{{ player.first_name }} {{ player.last_name }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-=======
-<div class="info-list">
-    <p><strong>Coach:</strong> {{ club.coach_name if club.coach_name and club.coach_name.strip() else "Not available" }}</p>
-    <p><strong>Domestic Competition:</strong> {{ club.domestic_competition_id }}</p>
-    <p><strong>Squad Size:</strong> {{ club.squad_size }}</p>
-    <p><strong>Average Age:</strong> {{ club.average_age }}</p>
-    <p><strong>Stadium Name:</strong> {{ club.stadium_name }}</p>
-    <p><strong>Stadium Seats:</strong> {{ club.stadium_seats }}</p>
-    <p><strong>URL:</strong> <a href="{{ club.url }}" target="_blank">{{ club.url }}</a></p>
-    <p><strong>Competition Year:</strong> {{ club.cl_year }}</p>
-</div>
-
-<h2>Players in {{ club.name }}</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Player ID</th>
-            <th>Full Name</th> <!-- Only Full Name is kept -->
-        </tr>
-    </thead>
-    <tbody>
-        {% for player in players %}
-        <tr>
-            <td>{{ player.player_id }}</td>
-            <!-- Player full name -->
-            <td><a href="/players/{{ player.player_id }}">{{ player.first_name }} {{ player.last_name }}</a></td>  
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
->>>>>>> 863f6a1a6fd7ed172fa906266c6805b468f87bf2
 
 </body>
 </html>

@@ -22,7 +22,8 @@ cur = conn.cursor()
 
 def parse_date(s):
     try:
-        return datetime.strptime(s, "%Y-%m-%d").date()
+        date_of_birth = datetime.strptime(s, "%Y-%m-%d %H:%M:%S").date()
+        return date_of_birth
     except:
         return None
 
@@ -174,7 +175,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
             int(row["player_id"].split(",")[0]),
             row.get("first_name"),
             row.get("last_name"),
-            date_of_birth,
             row.get("position"),
             row.get("sub_position"),
             height_in_cm,
@@ -196,7 +196,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
                     player_id,
                     first_name,
                     last_name,
-                    date_of_birth,
                     position,
                     sub_position,
                     height_in_cm,
@@ -221,7 +220,6 @@ with open("players.csv", newline="", encoding="utf-8") as f:
                 player_id,
                 first_name,
                 last_name,
-                date_of_birth,
                 position,
                 sub_position,
                 height_in_cm,
